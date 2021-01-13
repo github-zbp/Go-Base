@@ -1,0 +1,982 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <title>Python数据分析基础之Pandas（五） 数据抽取，索引，排序，合并-张柏沛IT博客</title>
+    <meta name="keywords" content="Python,数据分析,Pandas,DataFrame" />
+	<meta name="description" content="数据抽取就是从原始数据集中根据某些条件抽取出一小段所需的数据如随机抽取、按照索引抽取，此外本节还会介绍其他的DataFrame的操作包括排序，重置索引，交换行或列以及合并等" />
+	<meta charset="UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css"/>
+	<link rel="stylesheet" type="text/css" href="/statics/css/main.css"/>
+	<script type="text/javascript" src="/statics/js/jquery.min.js"></script>
+	<script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+   <script> 
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?4898023a3a963db158d0eeee27c56c80";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+
+<body>
+<div class="header-box  pc">
+	<div class="header-inner">
+		<h1 class="header-logo">
+			<a href="/" rel="home"><img src="/logo.jpg" alt="Python数据分析基础之Pandas（五） 数据抽取，索引，排序，合并-张柏沛IT博客" title="Python数据分析基础之Pandas（五） 数据抽取，索引，排序，合并-张柏沛IT博客" /></a>
+		</h1>
+		<div class="search-box">
+			<form class="search-form" action="/search" method="get">
+			<input type="hidden" value="" name="search_type" id="search-type-input">
+			<div class="form-group">
+			<select class="form-control" id="search-select" name="search_select" style="border-radius:0">
+			  <option value="blogs" type="1" >博客文章</option>
+			  <option value="blogs" type="2" >模板源码</option>
+			  <option value="blogs" type="3" >视频教程</option>
+			  <option value="article" type="">新闻资讯</option>
+			</select>
+			</div>
+			  <div class="form-group">
+				<input style="border-radius:0" name="kw" value="" type="text" class="form-control" id="search-input" placeholder="搜索关键词">
+			  </div>
+			  
+			  <button type="submit" id="search-btn" class="btn btn-primary">搜索</button>
+			</form>
+		</div>
+	</div>
+	
+	<div class="header-cate">
+		<ul id="header-cate-ul">
+		<a class="top-cate-a" href="/">
+		<li class="father-li float">
+			首页
+		</li>
+		</a>
+		            <a href="/cate-php">
+			<li class="father-li ">
+			
+			PHP</li>
+			</a>
+            
+				            <a href="/cate-python">
+			<li class="father-li active">
+			
+			Python</li>
+			</a>
+            
+				            <a href="/cate-golang">
+			<li class="father-li ">
+			
+			Go语言</li>
+			</a>
+            
+				            <a href="/cate-linux">
+			<li class="father-li ">
+			
+			Linux</li>
+			</a>
+            
+				            <a href="/cate-mysql">
+			<li class="father-li ">
+			
+			MySQL</li>
+			</a>
+            
+				            <a href="/cate-web">
+			<li class="father-li ">
+			
+			Web前端</li>
+			</a>
+            
+				            <a href="/cate-transfer">
+			<li class="father-li ">
+			
+			优质转载</li>
+			</a>
+            
+							
+			<a href="/about">
+			<li class="father-li">
+			
+			关于作者</li>
+			</a>
+		</ul>
+	</div>
+</div>	
+
+<div class="mobile" style="height:70px"></div>
+<div class="header-box-mobile mobile">
+	<div class="header-mobile-img">
+		<a href="/"><img src="/logo-no-word.jpg"></a>
+	</div>
+	<div class="header-mobile-btn">
+		<ul class="header-btn-ul">
+			<li class="mobile-search float"></li>
+			<li class="mobile-navbar float"></li>
+		</ul>
+	</div>
+</div>
+<div class="header-box-modal mobile">
+	<div class="header-box-btn">
+	</div>
+	<div class="header-box-right">
+		<ul class="header-box-ul">
+		<a href="/" rel="home">
+		<li class="">
+			首页
+		</li>
+		</a>
+			            <a href="/cate-php">
+			<li class="">
+			
+			PHP</li>
+			</a>
+            
+				            <a href="/cate-python">
+			<li class="active">
+			
+			Python</li>
+			</a>
+            
+				            <a href="/cate-golang">
+			<li class="">
+			
+			Go语言</li>
+			</a>
+            
+				            <a href="/cate-linux">
+			<li class="">
+			
+			Linux</li>
+			</a>
+            
+				            <a href="/cate-mysql">
+			<li class="">
+			
+			MySQL</li>
+			</a>
+            
+				            <a href="/cate-web">
+			<li class="">
+			
+			Web前端</li>
+			</a>
+            
+				            <a href="/cate-transfer">
+			<li class="">
+			
+			优质转载</li>
+			</a>
+            
+						<a href="/about">
+			<li class="father-li">
+			
+			关于作者</li>
+			</a>
+		</ul>
+	</div>
+</div>
+
+<div class="search-modal mobile">
+	<div class="mobile-close black-close" style="width:20px;height:20px"></div>
+	<div class="mobile-search-form-box">
+		<form class="mb-search-form" action="/search" method="get">
+			<input type="hidden" value="" name="search_type" id="mb-search-type-input">
+			<div class="form-group">
+			<select class="form-control" id="mb-search-select" name="search_select" style="border-radius:0">
+			  <option value="blogs" type="1" >博客文章</option>
+			  <option value="blogs" type="2" >模板源码</option>
+			  <option value="blogs" type="3" >视频教程</option>
+			  <option value="article" type="">新闻资讯</option>
+			</select>
+			</div>
+			  <div class="form-group">
+				<input style="border-radius:0" name="kw" value="" type="text" class="form-control" id="mb-search-input" placeholder="搜索关键词">
+			  </div>
+			  
+			  <button type="submit" id="mb-search-btn" class="btn btn-primary">搜索</button>
+			</form>
+			<script>
+				
+			</script>
+	</div>
+</div>
+
+<link rel="stylesheet" type="text/css" href="/statics/modal/css/jquery.my-modal.1.1.winStyle.css" />    <!-- 模态框的css -->
+<script type="text/javascript" src="/statics/modal/js/jquery.my-modal.1.1.js"></script>		<!-- 模态框的js -->
+<link rel="stylesheet"
+      href="/statics/css/zenburn.css" type="text/css">
+<script src="/statics/js/highlight.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<div id="container" data-id="94">
+	<div id="breadcrumb">
+		所在位置：<a href="/">首页</a> > <a href="/cate-python">Python</a> > <span>Python数据分析基础之Pandas（五） 数据抽取，索引，排序，合并</span>	</div>
+	 
+	<div class="c-left">
+		<div class="section-head">
+			正文内容
+		</div>
+		<div id="blog-art-box">
+			<div id="blog-art-head">
+				<h1>Python数据分析基础之Pandas（五） 数据抽取，索引，排序，合并</h1>
+			</div>
+			<div id="blog-art-info">
+				<span>栏目：<a href="/cate-python">Python</a></span>
+				<span>发布时间：2019-12-09 17:19</span>
+				<span>浏览量：560</span>
+			</div>
+			<div class="blog-art-cont">
+			<div class="cont">
+				<p><span style="font-size:18px"><span style="color:#e74c3c"><strong>数据抽取就是从原始数据集中根据某些条件抽取出一小段所需的数据如随机抽取、按照索引抽取，此外本节还会介绍其他的DataFrame的操作包括排序，重置索引，交换行或列等</strong></span></span></p>
+
+<p>&nbsp;</p>
+
+<p><strong>1.字段抽取 &nbsp;这里不是抽取字段的列和行,而是从列里面的数据内容截取一部分</strong><br />
+slice(start,stop)</p>
+
+<p>&nbsp;</p>
+
+<p><strong>2.字段截取</strong><br />
+splice(seq,n,expand=False)</p>
+
+<p>seq分隔符<br />
+n分割后新增的列数<br />
+expand 是否展开为DataFrame 默认False</p>
+
+<p>&nbsp;</p>
+
+<pre>
+<code class="language-python">from pandas import DataFrame as df
+from pandas import read_csv
+
+df1 = read_csv(r"../material/i_nuc_sheet4.csv")
+print(df1)
+
+#             学号            电话                 IP
+# 0   2308024241  1.892225e+10      221.205.98.55
+# 1   2308024244  1.352226e+10    183.184.226.205
+# 2   2308024251  1.342226e+10      221.205.98.55
+# 3   2308024249  1.882226e+10      222.31.51.200
+# 4   2308024219  1.892225e+10       120.207.64.3
+# 5   2308024201           NaN      222.31.51.200
+# 6   2308024347  1.382225e+10      222.31.59.220
+# 7   2308024307  1.332225e+10  221.205.98.55    
+# 8   2308024326  1.892226e+10     183.184.230.38
+# 9   2308024320  1.332225e+10  221.205.98.55    
+# 10  2308024342  1.892226e+10     183.184.230.38
+# 11  2308024310  1.993421e+10     183.184.230.39
+# 12  2308024435  1.993421e+10     185.184.230.40
+# 13  2308024432  1.993421e+10     183.154.230.41
+# 14  2308024446  1.993421e+10     183.184.231.42
+# 15  2308024421  1.993421e+10     183.154.230.43
+# 16  2308024433  1.993421e+10     173.184.230.44
+# 17  2308024428  1.993421e+10                NaN
+# 18  2308024402  1.993421e+10      183.184.230.4
+# 19  2308024422  1.993421e+10      153.144.230.7
+
+df1 = df1.dropna()
+df1['电话']=df1['电话'].astype(str)  #转换类型为str,必须先转为字符类型才可以进行字段截取操作
+
+print(df1['电话'])
+
+#字段抽取
+brands = df1['电话'].str.slice(0,3)  #获取电话号码的商家
+area = df1['电话'].str.slice(3,7)    #获取电话号码的地区
+tell = df1['电话'].str.slice(7,11)     #获取电话号码的后4尾
+print(brands,area,tell)
+
+#字段截取
+print(df1['IP'].str.split("."))     #返回一个Serise,里面的单元格的内容是一个数组,但是类型还是object
+print(df1["IP"].str.split(".",expand=True)) #expand为True则会将切割的数据展开为很多个字段,返回的是一个DataFrame
+
+ip_df = df1["IP"].str.strip().str.split(".",expand=True)   #先去掉ip字符串左右的空格再切割
+ip_df.columns = ["IP1","IP2","IP3","IP4"]       #起列名
+print(ip_df)
+
+ip_df2 = df1['IP'].str.split(".",1,expand=True)   #第二参表示分割后新增的列数
+print(ip_df2)</code></pre>
+
+<p>&nbsp;</p>
+
+<p><strong>3.重置索引</strong><br />
+就是重新指定某列为索引,以便对其他数据操作</p>
+
+<p>set_index(列名)</p>
+
+<pre>
+<code class="language-python">from pandas import Series,DataFrame as df
+
+df1 = df({
+    "age":[26,85,64,85,85],
+    "name":['Ben',"John","Jerry","John","John"]
+})
+
+print(df1)  #原本是以数字为索引
+df2 = df1.set_index("name")
+print(df2)
+
+#根据索引查找行 (可以是多行)
+print(df2.loc['John'])   #loc是通过索引获取行数据,iloc是通过索引号获取行数据
+
+#    age   name
+# 0   26    Ben
+# 1   85   John
+# 2   64  Jerry
+# 3   85   John
+# 4   85   John
+#        age
+# name      
+# Ben     26
+# John    85
+# Jerry   64
+# John    85
+# John    85
+#       age
+# name     
+# John   85
+# John   85
+# John   85
+# 
+# Process finished with exit code 0
+
+</code></pre>
+
+<p>&nbsp;</p>
+
+<p><strong>4.记录抽取</strong><br />
+是根据一定条件对数据进行抽取<br />
+df[条件]</p>
+
+<p>返回值为Dataframe</p>
+
+<p>常见的condition类型有 == &gt; &lt; between isnull(),str.contains,&amp;(且),|(或),not(取反)<br />
+他们返回的是内容为True或者False的Series</p>
+
+<pre>
+<code class="language-python">from pandas import DataFrame as df
+from pandas import read_csv
+
+df1 = read_csv(r"../material/i_nuc_sheet4.csv")
+
+print(df1)
+
+print(df1[df1['电话']==13322252452])
+print(df1[df1['电话']&gt;13500000000])
+print(df1[df1['电话'].between(13400000000,13500000000)])
+print(df1[df1['IP'].isnull()])
+print(df1[(df1['电话']&gt;13500000000) &amp; (df1['IP'].str.contains("222.",na=False))])
+
+print(df1[df1['IP'].str.contains("222.",case=True,na=False)])  #na=False表示不匹配缺失值,如果这里为True而且数据中有缺失值就会报错;case=True表示区分大小写</code></pre>
+
+<p>&nbsp;</p>
+
+<p><strong>5.随机抽样</strong><br />
+用numpy.random.randint(start,end,num)先获取随机行号</p>
+
+<p>start,end 开始和结束范围<br />
+num 抽取个数</p>
+
+<p>然后在通过loc[]根据随机获取的行号获取df</p>
+
+<pre>
+<code class="language-python">from pandas import read_csv
+from pandas import DataFrame as df
+import  numpy as np
+import random
+
+df1 = read_csv(r"../material/i_nuc_sheet4.csv")
+
+indexes = np.random.randint(0,10,3)         #这样有可能会生成重复的数
+print(indexes)
+
+print(random.sample(range(0,10),10))   #生成不重复随机数
+
+print(df1.loc[indexes,:])  #有没有:都行</code></pre>
+
+<p>&nbsp;</p>
+
+<p><strong>6.通过索引抽取</strong><br />
+loc[]</p>
+
+<p>[]中两个参数可以为列表或者字符串,如果两者都为列表返回df;否则返回series<br />
+loc 全称为location&nbsp;<br />
+iloc 全称为 int &amp; location 即数字索引</p>
+
+<pre>
+<code class="language-python">from pandas import read_csv,DataFrame as df
+
+df1 = read_csv(r"../material/i_nuc_sheet4.csv")
+
+print(df1.head())
+
+df2 = df1.set_index("学号")
+print(df2.loc[2308024241:2308024201])
+print(df2.loc[2308024241:2308024201,"电话"])
+
+print(df1.loc[1])   #返回index=1的行,返回Series
+print(df1.loc[[1,2]])  #返回index=1和2 的行
+# print(df1.loc[1,1])  #报错
+
+print(df1.loc[1:3])  #返回index为1到2的行
+
+print(df1.iloc[1:3,0:2])    #返回index为1到2的行的前两列
+#print(df1.loc[1:3,0:2])    #报错</code></pre>
+
+<p>&nbsp;</p>
+
+<p><strong>7.字典数据抽取</strong></p>
+
+<pre>
+<code class="language-python">from pandas import Series,DataFrame as df
+
+d1 = df({"a":[1,2,3],"b":[2,3,4]})
+
+#如果a和b的长度不同的话用上面的方式定义会报错,可以先将字典中的list转为Series
+d2 = df({"a":Series([1,2,3]),"b":Series([4,5])})
+print(d1)
+print(d2)</code></pre>
+
+<p>&nbsp;</p>
+
+<p><strong>8.插入记录</strong><br />
+pd.concat(列表)<br />
+列表中可以放多个df,作用是将这多个df合并来达到插入记录的目的</p>
+
+<p>单纯使用concat虽然可以插入记录,但是索引会有一点问题,会有重复的索引,为了重新索引可以使用reset_index()方法<br />
+&nbsp;</p>
+
+<pre>
+<code class="language-python">from pandas import DataFrame as df
+from pandas import read_csv
+import pandas as pd
+
+df1 = read_csv("../material/i_nuc_sheet4.csv")
+
+print(df1)
+
+df2 = df({"学号":[101,102],"电话":[13578954322,18822493502],"IP":["127.0.0.1","47.123.157.22"]})
+
+#将df2插入到df1最前面(其实是通过合并两个df的方式来插入记录)
+df3 = pd.concat([df2,df1])
+print(df3)
+
+#将df2插入到df1的index=5的前面
+df4 = pd.concat([df1[:5],df2,df1[5:]])
+print(df4)
+
+#将df2插入到df1的最后面
+df5 = pd.concat([df1,df2])
+print(df5)
+
+#给df5重新索引
+# df5 = df5.reset_index() #会重新生成一个索引,原索引保留但是其索引名变成index
+# print(df5)
+# df5 = df5.drop("index",axis=1)
+# print(df5)
+
+#给df5重新索引的第二种方法
+# df5 = df5.reset_index(drop=True)
+# print(df5)
+
+#给df5重新索引的第三种方法,将一个迭代器返回给df5的index属性
+df5.index = range(len(df5.index))
+print(df5)</code></pre>
+
+<p>&nbsp;</p>
+
+<p><strong>9.修改记录</strong><br />
+replace方法</p>
+
+<pre>
+<code class="language-python">from pandas import Series,DataFrame as df
+from pandas import read_csv
+
+df1 = read_csv("../material/i_nuc_sheet3.csv")
+print(df1)
+
+#             学号        班级   姓名 性别  英语  体育  军训  数分  高代  解几
+# 0   2308024241  23080242   成龙  男  76  78  77  40  23  60
+# 1   2308024244  23080242   周怡  女  66  91  75  47  47  44
+# 2   2308024251  23080242   张波  男  85  81  75  45  45  60
+# 3   2308024249  23080242   朱浩  男  65  50  80  72  62  71
+# 4   2308024219  23080242   封印  女  73  88  92  61  47  46
+# 5   2308024201  23080242   迟培  男  60  50  89  71  76  71
+# 6   2308024347  23080243   李华  女  67  61  84  61  65  78
+# 7   2308024307  23080243   陈田  男  76  79  86  69  40  69
+# 8   2308024326  23080243   余皓  男  66  67  85  65  61  71
+# 9   2308024320  23080243   李嘉  女  62  作弊  90  60  67  77
+# 10  2308024342  23080243  李上初  男  76  90  84  60  66  60
+# 11  2308024310  23080243   郭窦  女  79  67  84  64  64  79
+# 12  2308024435  23080244  姜毅涛  男  77  71  缺考  61  73  76
+# 13  2308024432  23080244   赵宇  男  74  74  88  68  70  71
+# 14  2308024446  23080244   周路  女  76  80  77  61  74  80
+# 15  2308024421  23080244  林建祥  男  72  72  81  63  90  75
+# 16  2308024433  23080244  李大强  男  79  76  77  78  70  70
+# 17  2308024428  23080244  李侧通  男  64  96  91  69  60  77
+# 18  2308024402  23080244   王慧  女  73  74  93  70  71  75
+# 19  2308024422  23080244  李晓亮  男  85  60  85  72  72  83
+# 20  2308024201  23080242   迟培  男  60  50  89  71  76  71
+
+# 将所有单元格中作弊替换为0
+df2=df1.replace("作弊",0)
+print(df2)
+
+#将指定体育列的作弊和军训列的缺勤改为0
+df3 = df1.replace({"体育":"作弊","军训":"缺考"},0)
+print(df3)
+
+#多值替换 将成龙替换为陈龙 将周怡换成周毅
+df4 = df1.replace({"成龙":"陈龙","周怡":"周毅"})
+#df4 = df1.replace(["成龙","周怡"],["陈龙","周毅"])         #也可以
+print(df4)
+
+</code></pre>
+
+<p>&nbsp;</p>
+
+<p><strong>10.交换行或者列（也可以用于对行和列的排序）</strong><br />
+DataFrame.reindex()<br />
+&nbsp;</p>
+
+<pre>
+<code class="language-python">from pandas import DataFrame as df
+
+df1 = df({"a":[1,2,3],"b":["a","b","c"],"c":["A","B","C"]})
+
+print(df1)
+
+#交换行
+hang = [0,2,1]
+df2 = df1.reindex(hang)  #让index的顺序变为 0 2 1;其他字段的值也跟着变
+print(df2)
+
+print(df2.reindex(hang))  #不会再变
+
+#交换列
+lie = ["b","a","c"]
+df3 = df1.reindex(columns=lie)
+print(df3)</code></pre>
+
+<p>&nbsp;</p>
+
+<p><strong>11.排序&nbsp;</strong><br />
+sort_index &nbsp;对索引 index 进行排序</p>
+
+<p>series中的是sort_index(ascending=True)<br />
+dataframe中的是 sort_index(axis=0,by=None,ascending=True) ,axis是轴向，by是对那一列或几列排序</p>
+
+<p>sort_value([列名]) 对值排序<br />
+&nbsp;</p>
+
+<pre>
+<code class="language-python">from pandas import DataFrame as df
+
+df0 = df({"b":[0,6,3],"a":[7,4,1],"c":[2,8,5]},index=['A','D','C'])
+print(df0)
+
+#    b  a  c
+# A  0  7  2
+# D  6  4  8
+# C  3  1  5
+
+print(df0.sort_index())  #index被排序
+print(df0.sort_index(by=["a","b","c"]))   #根据值对索引,已被废弃,现使用sort_value()
+print(df0.sort_index(axis=1))  #根据列名排序</code></pre>
+
+<p>&nbsp;</p>
+
+<pre>
+<code class="language-python">from pandas import Series
+from pandas import DataFrame as df
+
+df1 = df({
+    "a":[1,2,3,0],
+    "c":["A","E","B","C"],
+    "d":["a","b","d","c"],
+    "b":[1,3,2,5]
+},index=[1,3,2,4])
+
+print(df1)
+
+df2 = df1.sort_index()
+df2 = df2.sort_index(axis=1)   #df2是df1经过index和column排序后所得
+
+df3 = df2.sort_values(["c","b"])  #他会先根据c的值排，其他列的值会都根据c列的值的顺序去排
+print(df3)
+
+</code></pre>
+
+<p>&nbsp;</p>
+
+<p><strong>12.排名方法</strong><br />
+Series.rank(method=&#39;average&#39;,ascending=True)</p>
+
+<pre>
+<code class="language-python">from pandas import Series
+
+s1 = Series([3,2,0,3],index=list("abcd"))
+print(s1)
+print(s1.rank())
+print(s1.rank(method='min'))
+print(s1.rank(method="max"))
+print(s1.rank(method="first"))</code></pre>
+
+<p>&nbsp;</p>
+
+<p><strong>13.重新索引</strong><br />
+Series.reindex(index=None,**kwargs) &nbsp;</p>
+
+<p>**kwargs中常用的两个参数：<br />
+method=None 和 fill_value=np.NaN</p>
+
+<pre>
+<code class="language-python">from pandas import Series
+
+s1 = Series([4.5,7.2,-5.3,3.6],index=['d','b','a','c'])
+A=["a",'b','c','d','e']
+
+print(s1)
+print(s1.reindex(A))  #多出来的e的值会用NaN填充
+print(s1.reindex(A,fill_value=0))   #e的值用0填充
+
+# ======= DataFrame.reindex() ==========
+from pandas import DataFrame as df
+import numpy as np
+df1 = df(np.arange(9).reshape((3,3)),index=['a','d','c'],columns=['c1','c2','c3'])
+print(df1)
+
+df2 = df1.reindex(index=['a','b','c','d'])
+print(df2)
+
+df2= df2.fillna(method='ffill',axis=0)
+print(df2)
+
+#按照给定列名排序
+cols = ['c1','b2','c3']
+df3 = df1.reindex(columns=cols)
+print(df3)
+
+df3 = df3.fillna(method='ffill',axis=1)   #前置填充，即，填充的内容是前一行或前一列的内容，axis=1是前一列
+
+</code></pre>
+
+<p>&nbsp;</p>
+
+<p><strong>14.重置索引&nbsp;</strong><br />
+set_index(keys,drop=True,append=False,inplace=False)</p>
+
+<p>append=True &nbsp;保留原索引并添加新索引<br />
+drop=False &nbsp; 保留被作为索引的列<br />
+inplace=True 在原数据集上做修改，即会影响原数据</p>
+
+<pre>
+<code class="language-python">from pandas import Series,DataFrame as df
+
+df1=df({
+    "a":[1,2,3],
+    "b":['a','b','c'],
+    "c":["A","B","C"]
+})
+
+print(df1)
+
+print(df1.set_index(['b','c'],drop=False,append=True,inplace=False))</code></pre>
+
+<p>&nbsp;</p>
+
+<p><strong>15.还原索引</strong><br />
+reset_index(level=None,drop=False,inplace=False,col_level=0,col_fill=&#39;&#39;)</p>
+
+<p>将索引还原为默认的整型索引</p>
+
+<pre>
+<code class="language-python">from pandas import Series,DataFrame as df
+
+df1=df({
+    "a":[1,2,3],
+    "b":['a','b','c'],
+    "c":["A","B","C"]
+},index=["X","Y","Z"])
+
+print(df1)
+
+print(df1.reset_index())    #默认会保留原索引 xyz,不改变原数据
+print(df1)
+
+print(df1.reset_index(drop=True))  #不保留原索引</code></pre>
+
+<p>&nbsp;</p>
+
+<p><strong>16.数据合并</strong></p>
+
+<p>记录合并（行合并）<br />
+pandas.concat([df1,df2,...],ignore_index=False) &nbsp;</p>
+
+<p>记录合并（行合并）<br />
+pandas.concat([df1,df2,...],ignore_index=False) &nbsp; &nbsp; &nbsp; &nbsp;#ignore_index参数设为True可以在合并两个df的时候让index顺延</p>
+
+<p>或者</p>
+
+<p>df.append(df2,ignore_index=False) &nbsp; #ignore_index参数设为True可以在合并两个df的时候让index顺延</p>
+
+<p>字段合并（不是合并多个df）<br />
+将多个字段合并为一个字段，返回值是一个Series<br />
+方式：<br />
+x1+x2+...</p>
+
+<pre>
+<code class="language-python">from pandas import DataFrame as df
+
+df1 = df({
+    'band':[189,135,134,133],
+    'area':['0351','0352','0354','0341'],
+    "num":[2190,8513,8080,7890]
+})
+
+# 注意，合并的时候要求合并的列都是字符串型;而且所有列的行数都相同
+
+df1 = df1.astype(str)
+phone = df1['band']+df1['area']+df1['num']
+
+df1['phone']=phone
+
+print(df1)</code></pre>
+
+<p>&nbsp;</p>
+
+<p>17.字段匹配（合并多个dataframe）<br />
+将不同结构的数据框按照一定条件进行匹配合并，即追加列<br />
+merge(x,y,left_on,right_on)</p>
+
+<p>x 第一个数据框<br />
+y 第二个数据框<br />
+left_on 第一个数据框用于匹配的列<br />
+right_on &nbsp;第二个数据框用于匹配的列</p>
+
+<p>其他参数<br />
+how:<br />
+inner 默认 去交集<br />
+outer 取并集<br />
+left 保留左侧全部<br />
+right 保留右侧全部</p>
+
+<p>on: 用于连接的列名,必须是两个df都有的列名<br />
+如果指定了on 可以不指定 left_on和right_on</p>
+
+<pre>
+<code class="language-python">from pandas import DataFrame as df,Series,read_csv
+import pandas
+
+df1 = read_csv("../material/i_nuc_sheet3.csv")
+df2 = read_csv("../material/i_nuc_sheet4.csv")
+print(df1)
+print(df2)
+
+df3 = pandas.merge(df1,df2,left_on="学号",right_on="学号")   #相当于以学号字段作为关联字段，将两个表结合起来
+
+print(df3)
+
+#如果df1中有学号为1的记录，df2没有学号1的记录，结合好的df是没有学号1的</code></pre>
+			</div>
+				
+				<div class="zhuanzai-box">
+				<p>
+					如果您需要转载,可以点击下方按钮可以进行复制粘贴;本站博客文章为原创,请转载时注明以下信息
+				</p>
+				<p class="banquan-info">
+					<a href="https://www.zbpblog.com">张柏沛IT技术博客</a> > <a href="https://www.zbpblog.com/blog-94.html">Python数据分析基础之Pandas（五） 数据抽取，索引，排序，合并</a>
+				</p>
+				<p style="text-align:center">
+					<button type="button" id="zz" class="btn btn-primary" style="width:200px;">点击复制转载该篇文章</button>
+				</p>
+			</div>
+			</div>
+			
+			
+				
+			<div class="related_tags">
+					<span>相关标签：</span>
+					<ul class="related_tags_ul">
+											<li class="float related_tags_li"><a href="/tag9-理论技巧" target="_blank">理论技巧</a></li>
+											<li class="float related_tags_li"><a href="/tag1-Python" target="_blank">Python</a></li>
+											<li class="float related_tags_li"><a href="/tag21-数据分析" target="_blank">数据分析</a></li>
+										</ul>
+				</div>
+			
+			<div class="neighbour">
+				<div class="neighbour-div neighbour-last">
+					<span>上一篇</span><br>
+					<a href="/blog-93.html">Python数据分析基础之Pandas（四） 数据处理之数据清洗</a>
+				</div>
+				<div class="neighbour-div neighbour-next">
+					<span>下一篇</span><br/>
+					<a href="/blog-95.html">Python数据分析基础之Pandas（六） 数据计算</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="c-right">
+		<div class="section-head">
+			热门推荐
+		</div>
+					<div class="right-content">
+	<div class="right-head">
+		推荐文章
+	</div>
+	<ul class="right-ul">
+			<li>
+			<span class="blog-type color1">文章</span><a href="/blog-123.html" target="_blank">Python数据可视化（一） matplotlib,seaborn,pandas绘制折线图和饼图</a>
+		</li>
+			<li>
+			<span class="blog-type color1">文章</span><a href="/blog-107.html" target="_blank">Python数据分析小案例&mdash;&mdash;红楼梦文本分析（三） KMeans聚类</a>
+		</li>
+			<li>
+			<span class="blog-type color1">文章</span><a href="/blog-32.html" target="_blank">Python初级爬虫实战（一）之爬取图片网的图片</a>
+		</li>
+			<li>
+			<span class="blog-type color1">文章</span><a href="/blog-110.html" target="_blank">爬虫进阶之Scrapy（七） 使用selenium模拟浏览器动态爬取</a>
+		</li>
+			<li>
+			<span class="blog-type color1">文章</span><a href="/blog-29.html" target="_blank">Python爬虫入门（二） 使用BeautifulSoup解析网页内容</a>
+		</li>
+			<li>
+			<span class="blog-type color1">文章</span><a href="/blog-27.html" target="_blank">Python爬虫入门（一） 使用requests模块获取网页</a>
+		</li>
+			<li>
+			<span class="blog-type color1">文章</span><a href="/blog-26.html" target="_blank">Python教程之使用pymysql操作Mysql数据库</a>
+		</li>
+			<li>
+			<span class="blog-type color1">文章</span><a href="/blog-170.html" target="_blank">python 多线程 + DBUtils连接池操作数据库（附python之GIL）</a>
+		</li>
+			<li>
+			<span class="blog-type color1">文章</span><a href="/blog-122.html" target="_blank">python+selenium模拟百度搜索并点击链接</a>
+		</li>
+			<li>
+			<span class="blog-type color1">文章</span><a href="/blog-105.html" target="_blank">Python数据分析小案例&mdash;&mdash;红楼梦文本分析（一） 文本预处理</a>
+		</li>
+			<li>
+			<span class="blog-type color1">文章</span><a href="/blog-102.html" target="_blank">Python数据分析基础（九） 使用Seaborn绘制图像</a>
+		</li>
+			<li>
+			<span class="blog-type color1">文章</span><a href="/blog-83.html" target="_blank">爬虫进阶之Scrapy（一） scrapy框架安装和架构介绍（Windows端，Centos和Ubantu）</a>
+		</li>
+			<li>
+			<span class="blog-type color1">文章</span><a href="/blog-171.html" target="_blank">Python 多线程+多进程+任务队列爬取文章</a>
+		</li>
+			<li>
+			<span class="blog-type color1">文章</span><a href="/blog-95.html" target="_blank">Python数据分析基础之Pandas（六） 数据计算</a>
+		</li>
+			<li>
+			<span class="blog-type color1">文章</span><a href="/blog-104.html" target="_blank">Python：使用jieba分词和wordcloud实现词云</a>
+		</li>
+		</ul>
+</div>
+					<div class="right-content">
+	<div class="right-head">
+		推荐新闻
+	</div>
+	<ul class="right-ul">
+		</ul>
+</div>
+			</div>
+<div class="m-modal">	
+    <div class="m-middle2">
+    
+    </div>
+</div>
+<script>
+	$(function(){
+	
+		var m1 = new MyModal.modal();
+		
+		$(".cont").on("click","img",function(){
+            let src = $(this).attr("src")
+			$(".m-middle2").html(`<img src="${src}">`)
+			m1.show();
+		});
+        
+        $(".m-modal,.m-middle2").click(function(){
+            m1.hide();
+        })
+	})
+	
+</script>
+	<script src="/statics/js/clipboard.min.js"></script>
+	<script src="/statics/js/copy_blog.js"></script>
+</div>
+<div style="clear:both;"></div>
+<div id="footer">
+	<div class="footer-inner">
+		<div class="footer-logo">
+			<a href="/" rel="home">
+				<img src="/logo.jpg" title="" alt=""/>
+			</a>
+		</div>
+		<div class="footer-cate pc">
+			<ul>
+									
+					<li class="footer-cate-li float">
+						<a href="/cate-php" target="blank">PHP</a>
+					</li>
+									
+					<li class="footer-cate-li float">
+						<a href="/cate-python" target="blank">Python</a>
+					</li>
+									
+					<li class="footer-cate-li float">
+						<a href="/cate-golang" target="blank">Go语言</a>
+					</li>
+									
+					<li class="footer-cate-li float">
+						<a href="/cate-linux" target="blank">Linux</a>
+					</li>
+									
+					<li class="footer-cate-li float">
+						<a href="/cate-mysql" target="blank">MySQL</a>
+					</li>
+									
+					<li class="footer-cate-li float">
+						<a href="/cate-web" target="blank">Web前端</a>
+					</li>
+									
+					<li class="footer-cate-li float">
+						<a href="/cate-transfer" target="blank">优质转载</a>
+					</li>
+								<li class="footer-cate-li float">
+					<a href="/about" target="blank">关于作者</a>
+				</li>
+			</ul>
+			
+			
+		</div>
+		
+	</div>
+	<center id="ba">张柏沛的个人IT技术博客 © www.zbpblog.com - <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备19143107号</a><br/><a href="/sitemap.xml" title="网站地图" target="_blank">网站地图</a></center>
+	
+</div>
+
+<script type="text/javascript" src="/statics/js/jquery.lazyload.js"></script>
+<script type="text/javascript" src="/statics/js/main.js"></script>
+
+</body>
+</html>
